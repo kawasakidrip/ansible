@@ -1,0 +1,42 @@
+- name: install git, copy ssh, clone repo
+  hosts: all
+  become: yes
+  tasks:
+    - name: install Git
+      apt:
+        name: git
+        state: present 
+
+    - name: mkdir for SSH-keys
+      file:
+        path: /home/ansible-worker/.ssh
+        state: directory
+        owner: ansible-worker
+        group: ansible-worker
+        mode: '0700'
+
+    - name: copy SSH-keys
+      copy:
+        src: ssh_keys/
+        dest: /home/ansible-worker/.ssh
+        owner: ansible-worker
+        group: ansible-worker
+        mode: '0600'
+      notify: Restart SSH
+
+    - name: clone repo
+      git:
+        repo: "https://github.com/iphilka/stud-template.git"
+        dest: /home/ansible-worker/www/
+        clone: yes
+        update: no
+        version: master
+        accept_hostkey: yes
+        key_file: /home/ansible-worker/.ssh/id_rsa 
+        force: yes
+
+  handlers:
+    - name: Restart SSH
+      service:
+        name: ssh
+        state: restarted

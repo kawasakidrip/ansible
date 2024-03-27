@@ -1,0 +1,26 @@
+- name: Configure Nginx
+  hosts: all
+  become: yes
+  tasks:
+    - name: Create directory for Nginx site config
+      file:
+        path: /etc/nginx/sites-available
+        state: directory
+
+    - name: Copy Nginx site config file
+      template:
+        src: templates/nginx_config.conf.j2
+        dest: /etc/nginx/sites-available/ansible.iphilka.ru.conf
+      notify: Reload Nginx
+
+    - name: Enable Nginx site
+      file:
+        src: /etc/nginx/sites-available/ansible.iphilka.ru.conf
+        dest: /etc/nginx/sites-enabled/ansible.iphilka.ru.conf
+        state: link
+    
+handlers:
+  - name: Reload Nginx
+    service:
+      name: nginx
+      state: reloaded

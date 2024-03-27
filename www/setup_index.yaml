@@ -1,0 +1,9 @@
+- name: Set up index.html template
+  hosts: all
+  become: yes
+  tasks:
+    - name: Copy index.html template
+      template:
+        src: templates/index.html.j2
+        dest: /home/ansible-worker/www/stud-template/index.html
+      notify: Reload Nginx
