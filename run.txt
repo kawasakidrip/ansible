@@ -1,0 +1,4 @@
+root_ansible-playbook www/create_user.yaml -i hosts.ini
+root_ansible-playbook www/install_git.yaml -i hosts.ini
+root_ansible-playbook www/install_nginx.yaml -i hosts.ini
+root_ansible-playbook www/setup_index.yaml -i hosts.ini
